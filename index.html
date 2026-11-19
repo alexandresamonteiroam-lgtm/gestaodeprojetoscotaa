@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COTAA - Gestão de Projetos | SANESUL</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    /* ============ SANESUL OFFICIAL BRAND TOKENS ============ */
+    :root {
+      --sn-blue-deep: #0075BC;      /* Azul Institucional Corporativo */
+      --sn-blue-cyan: #00ADEF;      /* Azul Celeste / Água */
+      --sn-green-ms: #95C11E;       /* Verde Limão MS / Destaque */
+      --sn-green-dark: #7aa115;     /* Hover do Verde Limão */
+      --sn-teal: #1D96B7;           /* Ciano Escuro / Títulos */
+      --sn-lime-hover: #C8D300;     /* Chartreuse / Hover Nav */
+      --sn-orange: #FA9801;         /* Âmbar / CTA / Urgência */
+      --sn-whatsapp: #25D366;       /* Verde WhatsApp */
+      
+      --sn-bg: #F7F9FB;             /* Fundo Off-White Suave */
+      --sn-bg-card: #FFFFFF;        /* Superfície Branca */
+      --sn-border: #DDE5EC;         /* Borda Padrão */
+      --sn-border-light: #EEF3F7;   /* Borda Leve */
+      
+      --sn-text-title: #111827;     /* Título Escuro */
+      --sn-text-body: #374151;      /* Texto Base */
+      --sn-text-muted: #6B7280;     /* Texto Secundário */
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      background-color: var(--sn-bg);
+      color: var(--sn-text-body);
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Gradient Headers & Footers */
+    .sanesul-gradient-header {
+      background: linear-gradient(90deg, #0075BC 0%, #00ADEF 100%);
+      box-shadow: 0 4px 14px rgba(0, 117, 188, 0.18);
+    }
+    .sanesul-gradient-footer {
+      background: linear-gradient(90deg, #00ADEF 0%, #0075BC 100%);
+    }
+
+    /* Tabs */
+    .nav-tab-btn {
+      position: relative;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.82);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border-bottom: 3px solid transparent;
+    }
+    .nav-tab-btn:hover {
+      color: var(--sn-lime-hover);
+    }
+    .nav-tab-btn.active {
+      color: #FFFFFF;
+      border-bottom-color: var(--sn-green-ms);
+    }
+    .nav-tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 3px;
+      background: var(--sn-green-ms);
+      border-radius: 2px;
+    }
+
+    /* Pipeline Step Dots */
+    .pipe-step-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+    }
+    .pipe-step-dot:hover {
+      transform: scale(1.3);
+      box-shadow: 0 0 0 4px rgba(0, 173, 239, 0.25);
+    }
+    .pipe-step-dot.done {
+      background: #008744;
+      color: #FFFFFF;
+      box-shadow: 0 2px 5px rgba(0, 135, 68, 0.3);
+    }
+    .pipe-step-dot.pending {
+      background: #E2E8F0;
+      color: #94A3B8;
+      border: 1.5px solid #CBD5E1;
+    }
+    .pipe-step-conn {
+      width: 10px;
+      height: 2.5px;
+      display: inline-block;
+      vertical-align: middle;
+      border-radius: 1px;
+    }
+    .pipe-step-conn.done { background: #008744; }
+    .pipe-step-conn.pending { background: #E2E8F0; }
+
+    /* Buttons */
+    .btn-sanesul-green {
+      background: var(--sn-green-ms);
+      color: #FFFFFF;
+      font-weight: 600;
+      padding: 7px 15px;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      cursor: pointer;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    }
+    .btn-sanesul-green:hover {
+      background: var(--sn-green-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(149, 193, 30, 0.35);
+    }
+    .btn-sanesul-blue {
+      background: var(--sn-blue-deep);
+      color: #FFFFFF;
+      font-weight: 600;
+      padding: 7px 15px;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-sanesul-blue:hover {
+      background: #00609b;
+      box-shadow: 0 3px 10px rgba(0, 117, 188, 0.3);
+    }
+    .btn-sanesul-outline {
+      background: #FFFFFF;
+      color: var(--sn-text-body);
+      border: 1.5px solid var(--sn-border);
+      font-weight: 500;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-sanesul-outline:hover {
+      border-color: var(--sn-blue-deep);
+      color: var(--sn-blue-deep);
+      background: #F0F7FC;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(3px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    .modal-sheet {
+      background: #FFFFFF;
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      max-width: 780px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes modalSlideUp { from { transform: translateY(18px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+
+    /* Inputs */
+    .app-input, .app-select, .app-textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1.5px solid var(--sn-border);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--sn-text-title);
+      background: #FFFFFF;
+      transition: all 0.15s ease;
+    }
+    .app-input:focus, .app-select:focus, .app-textarea:focus {
+      outline: none;
+      border-color: var(--sn-blue-cyan);
+      box-shadow: 0 0 0 3px rgba(0, 173, 239, 0.18);
+    }
+
+    /* Timeline Log */
+    .log-item {
+      position: relative;
+      padding-left: 24px;
+      padding-bottom: 16px;
+    }
+    .log-item::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 10px;
+      bottom: 0;
+      width: 2px;
+      background: #E2E8F0;
+    }
+    .log-item:last-child::before { display: none; }
+    .log-dot {
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 3px solid var(--sn-blue-cyan);
+    }
+
+    /* Toast */
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+      animation: modalSlideUp 0.25s ease;
+    }
+
+    .project-table-row {
+      transition: background 0.15s ease;
+      cursor: pointer;
+    }
+    .project-table-row:hover {
+      background: #F0F7FC !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ================= TOP UTILITY BAR (VERDE MS) ================= -->
+  <div style="background: var(--sn-green-ms);" class="text-white text-xs px-6 py-1.5 flex justify-between items-center tracking-wide font-medium">
+    <div class="flex items-center gap-4">
+      <span class="flex items-center gap-1.5 font-bold">
+        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/></svg>
+        SANESUL &bull; Governo de Mato Grosso do Sul
+      </span>
+      <span class="hidden md:inline text-white/90">GEDEO / COTAA &bull; Gestão Operacional de Automação e Ativos</span>
+    </div>
+    <div class="flex items-center gap-3 text-xs">
+      <span id="current-datetime" class="font-mono text-white/90"></span>
+      <button onclick="exportToCSV()" class="bg-white/20 hover:bg-white/30 text-white rounded px-2 py-0.5 transition flex items-center gap-1 font-semibold text-[11px]" title="Exportar dados para planilha CSV/Excel">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        Exportar CSV
+      </button>
+      <button onclick="resetDefaults()" class="bg-white/10 hover:bg-white/20 text-white/90 rounded px-1.5 py-0.5 text-[10px]" title="Restaurar dados originais da planilha">
+        Restaurar Original
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= MAIN HEADER (GRADIENTE AZUL SANESUL) ================= -->
+  <header class="sanesul-gradient-header px-6 pt-4 pb-0 text-white">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-3">
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center p-2 border border-white/20 shadow-inner">
+          <!-- Sanesul Water Drop Icon Motif -->
+          <svg class="w-8 h-8 text-white drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold tracking-tight text-white drop-shadow-sm">Controle de Projetos COTAA</h1>
+            <span class="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-white/20 text-white border border-white/30">2026</span>
+          </div>
+          <p class="text-xs text-white/85">Acompanhamento Técnico, Soluções de Telemetria, Eficiência & Software</p>
+        </div>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex items-center gap-3">
+        <!-- Search bar -->
+        <div class="relative">
+          <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Buscar projetos, fornecedores..." 
+            class="pl-9 pr-3 py-1.5 text-xs rounded-lg bg-white/15 border border-white/25 text-white placeholder-white/60 focus:bg-white focus:text-gray-900 focus:outline-none transition w-56 md:w-64"
+            oninput="filterProjects(this.value)">
+        </div>
+
+        <!-- Filter Category -->
+        <select id="categoryFilter" onchange="filterProjects(document.getElementById('searchInput').value)"
+          class="text-xs py-1.5 px-2.5 rounded-lg bg-white/15 border border-white/25 text-white focus:bg-white focus:text-gray-900 focus:outline-none transition">
+          <option value="all" class="text-gray-900">Todas as Categorias</option>
+          <option value="Telemetria" class="text-gray-900">Telemetria</option>
+          <option value="Software" class="text-gray-900">Software</option>
+          <option value="Eficiência Bombeamento" class="text-gray-900">Eficiência Bombeamento</option>
+          <option value="Datalogger/Monitoramento" class="text-gray-900">Datalogger / Monitoramento</option>
+          <option value="Balanço Hídrico online" class="text-gray-900">Balanço Hídrico online</option>
+        </select>
+
+        <!-- New Project Button -->
+        <button onclick="openNewProjectModal()" class="btn-sanesul-green text-xs shadow-md">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+          Novo Projeto
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="flex gap-1 border-t border-white/15 pt-1">
+      <button class="nav-tab-btn active" onclick="switchTab('dashboard', this)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+        Painel Geral (Dashboard)
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('projetos', this)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Projetos & Acompanhamento
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('pipeline', this)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        Pipeline Kanban
+      </button>
+      <button class="nav-tab-btn" onclick="switchTab('contatos', this)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Diretório de Fornecedores
+      </button>
+    </nav>
+  </header>
+
+  <!-- ================= APP MAIN CONTAINER ================= -->
+  <main class="flex-1 p-6 max-w-7xl w-full mx-auto">
+
+    <!-- ==================== TAB: DASHBOARD ==================== -->
+    <div id="tab-dashboard" class="tab-pane space-y-6">
+      
+      <!-- KPI Metric Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- KPI 1 -->
+        <div class="bg-white border border-[var(--sn-border)] rounded-xl p-5 shadow-sm hover:shadow transition-all border-l-4" style="border-left-color: var(--sn-blue-deep);">
+          <div class="flex items-center justify-between text-xs font-semibold text-[var(--sn-text-muted)] uppercase">
+            <span>Total de Projetos</span>
+            <span class="p-2 rounded-lg" style="background: rgba(0, 117, 188, 0.1); color: var(--sn-blue-deep);">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            </span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span id="kpi-total-num" class="text-3xl font-extrabold text-[var(--sn-text-title)]">0</span>
+            <span class="text-xs text-[var(--sn-text-muted)]">iniciativas ativas</span>
+          </div>
+        </div>
+
+        <!-- KPI 2 -->
+        <div class="bg-white border border-[var(--sn-border)] rounded-xl p-5 shadow-sm hover:shadow transition-all border-l-4" style="border-left-color: var(--sn-green-ms);">
+          <div class="flex items-center justify-between text-xs font-semibold text-[var(--sn-text-muted)] uppercase">
+            <span>Fornecedores</span>
+            <span class="p-2 rounded-lg" style="background: rgba(149, 193, 30, 0.15); color: var(--sn-green-dark);">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            </span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span id="kpi-fornec-num" class="text-3xl font-extrabold text-[var(--sn-text-title)]">0</span>
+            <span class="text-xs text-[var(--sn-text-muted)]">empresas parceiras</span>
+          </div>
+        </div>
+
+        <!-- KPI 3 -->
+        <div class="bg-white border border-[var(--sn-border)] rounded-xl p-5 shadow-sm hover:shadow transition-all border-l-4" style="border-left-color: var(--sn-teal);">
+          <div class="flex items-center justify-between text-xs font-semibold text-[var(--sn-text-muted)] uppercase">
+            <span>Categorias Técnicas</span>
+            <span class="p-2 rounded-lg" style="background: rgba(29, 150, 183, 0.12); color: var(--sn-teal);">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+            </span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span id="kpi-cat-num" class="text-3xl font-extrabold text-[var(--sn-text-title)]">0</span>
+            <span class="text-xs text-[var(--sn-text-muted)]">frentes de inovação</span>
+          </div>
+        </div>
+
+        <!-- KPI 4 -->
+        <div class="bg-white border border-[var(--sn-border)] rounded-xl p-5 shadow-sm hover:shadow transition-all border-l-4" style="border-left-color: var(--sn-orange);">
+          <div class="flex items-center justify-between text-xs font-semibold text-[var(--sn-text-muted)] uppercase">
+            <span>Maturidade do Funil</span>
+            <span class="p-2 rounded-lg" style="background: rgba(250, 152, 1, 0.15); color: var(--sn-orange);">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span id="kpi-avg-progress" class="text-3xl font-extrabold" style="color: var(--sn-blue-deep);">0%</span>
+            <span class="text-xs text-[var(--sn-text-muted)]">etapas cumpridas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts & Visual Analytics Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Category Distribution (2 Cols) -->
+        <div class="lg:col-span-2 bg-white border border-[var(--sn-border)] rounded-xl p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4 pb-2 border-b border-[var(--sn-border-light)]">
+            <h2 class="text-sm font-bold tracking-tight" style="color: var(--sn-teal);">
+              DISTRIBUIÇÃO DE PROJETOS POR CATEGORIA
+            </h2>
+            <span class="text-xs text-[var(--sn-text-muted)]">COTAA SANESUL</span>
+          </div>
+          <div id="category-bars-container" class="space-y-3.5">
+            <!-- Dynamic Category Progress Bars -->
+          </div>
+        </div>
+
+        <!-- Overall Circular Gauge (1 Col) -->
+        <div class="bg-white border border-[var(--sn-border)] rounded-xl p-6 shadow-sm flex flex-col items-center justify-center text-center">
+          <h2 class="text-sm font-bold tracking-tight mb-4" style="color: var(--sn-teal);">
+            AVANÇO GERAL DO PIPELINE
+          </h2>
+          <div class="relative my-2">
+            <svg width="150" height="150" viewBox="0 0 150 150">
+              <circle cx="75" cy="75" r="62" fill="none" stroke="#E2E8F0" stroke-width="12"/>
+              <circle id="gauge-circle" cx="75" cy="75" r="62" fill="none" stroke="url(#sanesulGaugeGradient)" stroke-width="12"
+                stroke-linecap="round" stroke-dasharray="389.5" stroke-dashoffset="389.5"
+                transform="rotate(-90 75 75)" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);" />
+              <defs>
+                <linearGradient id="sanesulGaugeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#0075BC" />
+                  <stop offset="100%" stop-color="#95C11E" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span id="gauge-percent" class="text-3xl font-extrabold text-[var(--sn-text-title)]">0%</span>
+              <span class="text-[11px] text-[var(--sn-text-muted)] font-medium">concluído</span>
+            </div>
+          </div>
+          <p class="text-xs text-[var(--sn-text-muted)] max-w-xs mt-2">
+            Calculado sobre as 6 etapas do funil de contratação da COTAA.
+          </p>
+        </div>
+      </div>
+
+      <!-- Funnel Stage Breakdown -->
+      <div class="bg-white border border-[var(--sn-border)] rounded-xl p-6 shadow-sm">
+        <h2 class="text-sm font-bold tracking-tight mb-4 pb-2 border-b border-[var(--sn-border-light)]" style="color: var(--sn-teal);">
+          EXECUÇÃO POR ETAPA DO FUNIL COTAA
+        </h2>
+        <div id="funnel-stages-cards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <!-- Dynamic Funnel Rings -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== TAB: PROJETOS (TABELA & EDIÇÃO) ==================== -->
+    <div id="tab-projetos" class="tab-pane hidden space-y-4">
+      <div class="bg-white border border-[var(--sn-border)] rounded-xl shadow-sm overflow-hidden">
+        
+        <!-- Table Toolbar -->
+        <div class="px-6 py-4 border-b border-[var(--sn-border-light)] flex flex-wrap items-center justify-between gap-3 bg-[#FAFBFD]">
+          <div class="flex items-center gap-3">
+            <h2 class="text-sm font-bold" style="color: var(--sn-teal);">PROJETOS EM ACOMPANHAMENTO</h2>
+            <span id="table-filtered-badge" class="text-xs px-2.5 py-0.5 rounded-full bg-[var(--sn-border-light)] text-[var(--sn-text-body)] font-semibold">18 itens</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="text-[var(--sn-text-muted)] hidden sm:inline">&bull; Clique nos círculos para marcar/desmarcar etapas</span>
+            <span class="text-[var(--sn-text-muted)] hidden sm:inline">&bull; Clique na linha para ver ou editar evolução</span>
+          </div>
+        </div>
+
+        <!-- Main Responsive Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead>
+              <tr class="border-b border-[var(--sn-border)] text-[11px] font-bold uppercase tracking-wider text-white" style="background: var(--sn-blue-deep);">
+                <th class="py-3 px-4 w-12 text-center">#</th>
+                <th class="py-3 px-4">Categoria</th>
+                <th class="py-3 px-4">Fornecedor</th>
+                <th class="py-3 px-4 min-w-[200px]">Projeto</th>
+                <th class="py-3 px-4 min-w-[220px]">Próximas Ações</th>
+                <th class="py-3 px-4 text-center min-w-[190px]">Etapas do Funil</th>
+                <th class="py-3 px-4 text-center w-28">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="projects-table-body" class="divide-y divide-[var(--sn-border-light)]">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== TAB: PIPELINE (KANBAN BOARD) ==================== -->
+    <div id="tab-pipeline" class="tab-pane hidden space-y-4">
+      <div class="flex items-center justify-between pb-2">
+        <p class="text-xs text-[var(--sn-text-muted)]">
+          Visualização em colunas por etapa. Clique no botão de avanço rápido para mover o projeto para a próxima fase.
+        </p>
+      </div>
+      <div id="kanban-board-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3.5">
+        <!-- Dynamic Kanban Columns -->
+      </div>
+    </div>
+
+    <!-- ==================== TAB: CONTATOS (FORNECEDORES) ==================== -->
+    <div id="tab-contatos" class="tab-pane hidden space-y-4">
+      <div class="bg-white border border-[var(--sn-border)] rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-[var(--sn-border-light)] bg-[#FAFBFD] flex items-center justify-between">
+          <h2 class="text-sm font-bold" style="color: var(--sn-teal);">CATÁLOGO DE CONTATOS E REPRESENTANTES</h2>
+          <span class="text-xs text-[var(--sn-text-muted)]">Informações diretas para fomento e alinhamento</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead>
+              <tr class="border-b border-[var(--sn-border)] text-[11px] font-bold uppercase tracking-wider text-white" style="background: var(--sn-blue-deep);">
+                <th class="py-3 px-5">Empresa / Fornecedor</th>
+                <th class="py-3 px-5">Pessoa de Contato</th>
+                <th class="py-3 px-5">Telefone / Celular</th>
+                <th class="py-3 px-5">E-mail Corporativo</th>
+                <th class="py-3 px-5">Projetos Relacionados</th>
+              </tr>
+            </thead>
+            <tbody id="contacts-table-body" class="divide-y divide-[var(--sn-border-light)]">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================= APP FOOTER (GRADIENTE SANESUL) ================= -->
+  <footer class="sanesul-gradient-footer text-white text-xs py-3 px-6 mt-auto">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="font-bold">SANESUL</span>
+        <span class="text-white/70">&bull;</span>
+        <span class="text-white/90">COTAA &bull; Coordenadoria Técnica de Automação e Ativos</span>
+      </div>
+      <div class="text-white/80 text-[11px]">
+        Desenvolvido com a Identidade Visual Oficial da Sanesul
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= MODAL DETALHES & EVOLUÇÃO ================= -->
+  <div id="modal-detail" class="modal-overlay hidden" onclick="if(event.target===this)closeModal('modal-detail')">
+    <div class="modal-sheet">
+      <div id="modal-detail-content">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL FORMULÁRIO DE PROJETO (CRIAR/EDITAR) ================= -->
+  <div id="modal-form" class="modal-overlay hidden" onclick="if(event.target===this)closeModal('modal-form')">
+    <div class="modal-sheet">
+      <div class="p-6 border-b border-[var(--sn-border-light)] flex items-center justify-between" style="background: linear-gradient(90deg, #F0F7FC 0%, #FFFFFF 100%);">
+        <div>
+          <h2 id="modal-form-title" class="text-base font-bold text-[var(--sn-blue-deep)]">Novo Projeto</h2>
+          <p class="text-xs text-[var(--sn-text-muted)]">Preencha os campos para cadastro ou atualização dos dados</p>
+        </div>
+        <button onclick="closeModal('modal-form')" class="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="project-edit-form" class="p-6 space-y-4" onsubmit="handleFormSubmit(event)">
+        <input type="hidden" id="form-project-id" value="">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase text-[var(--sn-text-muted)] mb-1">Categoria</label>
+            <select id="form-categoria" class="app-select">
+              <option value="Telemetria">Telemetria</option>
+              <option value="Software">Software</option>
+              <option value="Eficiência Bombeamento">Eficiência Bombeamento</option>
+              <option value="Datalogger/Monitoramento">Datalogger/Monitoramento</option>
+              <option value="Balanço Hídrico online">Balanço Hídrico online</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-[var(--sn-text-muted)] mb-1">Fornecedor / Empresa *</label>
+            <input type="text" id="form-fornecedor" class="app-input" required placeholder="Ex: FRACTUM, SONDA...">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase text-[var(--sn-text-muted)] mb-1">Nome do Projeto / Escopo *</label>
+          <input type="text" id="form-projeto" class="app-input" required placeholder="Ex: Implantação de Piloto de 12 meses...">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase text-[var(--sn-text-muted)] mb-1">Contato(s)</label>
+            <textarea id="form-contato" rows="2" class="app-textarea" placeholder="Nomes dos contatos"></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-[var(--sn-text-muted)] mb-1">Telefone(s)</label>
+            <textarea id="form-fone" rows="2" class="app-textarea" placeholder="(00) 00000-0000"></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-[var(--sn-text-muted)] mb-1">E-mail(s)</label>
+            <textarea id="form-email" rows="2" class="app-textarea" placeholder="contato@empresa.com.br"></textarea>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase text-[var(--sn-text-muted)] mb-1">Próximas Ações</label>
+          <input type="text" id="form-proximaAcao" class="app-input" placeholder="Ex: Agendar reunião de alinhamento com equipe...">
+        </div>
+
+        <!-- Pipeline checkboxes -->
+        <div>
+          <label class="block text-xs font-bold uppercase text-[var(--sn-text-muted)] mb-1.5">Etapas Concluídas no Funil COTAA</label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 bg-[#F8FAFC] p-3 rounded-lg border border-[var(--sn-border)]">
+            <label class="flex items-center gap-2 text-xs cursor-pointer select-none">
+              <input type="checkbox" id="form-status-0" class="w-4 h-4 rounded text-[var(--sn-blue-deep)]">
+              <span>1. Apresentação de solução</span>
+            </label>
+            <label class="flex items-center gap-2 text-xs cursor-pointer select-none">
+              <input type="checkbox" id="form-status-1" class="w-4 h-4 rounded text-[var(--sn-blue-deep)]">
+              <span>2. Envio de dados</span>
+            </label>
+            <label class="flex items-center gap-2 text-xs cursor-pointer select-none">
+              <input type="checkbox" id="form-status-2" class="w-4 h-4 rounded text-[var(--sn-blue-deep)]">
+              <span>3. Proposta comercial</span>
+            </label>
+            <label class="flex items-center gap-2 text-xs cursor-pointer select-none">
+              <input type="checkbox" id="form-status-3" class="w-4 h-4 rounded text-[var(--sn-blue-deep)]">
+              <span>4. Análise Proposta</span>
+            </label>
+            <label class="flex items-center gap-2 text-xs cursor-pointer select-none">
+              <input type="checkbox" id="form-status-4" class="w-4 h-4 rounded text-[var(--sn-blue-deep)]">
+              <span>5. Ajuste Proposta</span>
+            </label>
+            <label class="flex items-center gap-2 text-xs cursor-pointer select-none">
+              <input type="checkbox" id="form-status-5" class="w-4 h-4 rounded text-[var(--sn-blue-deep)]">
+              <span>6. Elaboração de processo</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase text-[var(--sn-text-muted)] mb-1">Observações Principais</label>
+          <textarea id="form-obs" rows="3" class="app-textarea" placeholder="Histórico, alinhamentos, detalhes técnicos..."></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-[var(--sn-border-light)]">
+          <button type="button" onclick="closeModal('modal-form')" class="btn-sanesul-outline text-xs">Cancelar</button>
+          <button type="submit" class="btn-sanesul-green text-xs">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Salvar Projeto
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-element" class="toast-box hidden bg-gray-900 text-white">
+    <span id="toast-text"></span>
+  </div>
+
+  <!-- ================= LOGIC SCRIPT ================= -->
+  <script>
+    const STAGES = [
+      'Apresentação de solução',
+      'Envio de dados',
+      'Proposta comercial',
+      'Análise Proposta',
+      'Ajuste Proposta',
+      'Elaboração de processo'
+    ];
+
+    const CATEGORY_STYLES = {
+      'Telemetria': {
+        badgeBg: 'rgba(0, 117, 188, 0.1)',
+        badgeText: '#0075BC',
+        border: 'rgba(0, 117, 188, 0.25)',
+        barColor: '#0075BC'
+      },
+      'Software': {
+        badgeBg: 'rgba(124, 58, 237, 0.1)',
+        badgeText: '#7C3AED',
+        border: 'rgba(124, 58, 237, 0.25)',
+        barColor: '#7C3AED'
+      },
+      'Eficiência Bombeamento': {
+        badgeBg: 'rgba(217, 119, 6, 0.1)',
+        badgeText: '#D97706',
+        border: 'rgba(217, 119, 6, 0.25)',
+        barColor: '#D97706'
+      },
+      'Datalogger/Monitoramento': {
+        badgeBg: 'rgba(149, 193, 30, 0.15)',
+        badgeText: '#7aa115',
+        border: 'rgba(149, 193, 30, 0.3)',
+        barColor: '#95C11E'
+      },
+      'Balanço Hídrico online': {
+        badgeBg: 'rgba(0, 173, 239, 0.12)',
+        badgeText: '#0097d1',
+        border: 'rgba(0, 173, 239, 0.3)',
+        barColor: '#00ADEF'
+      }
+    };
+
+    const INITIAL_PROJECTS = [
+      { id:1, categoria:'Telemetria', fornecedor:'FRACTUM', projeto:'Implantação Telemetria SANESUL', contato:'Heleno Nogueira', fone:'(35) 99751-0519', email:'heleno@fractum.com.br', proximaAcao:'Agendar apresentação da solução', status:[false,false,false,false,false,false], obs:'Indicação da Rosimeire Paulon', updates:[] },
+      { id:2, categoria:'Telemetria', fornecedor:'SONDA', projeto:'Implantação Telemetria SANESUL', contato:'Mônica Luciana Pires', fone:'(11) 98105-6631', email:'monica.souza@sonda.com', proximaAcao:'Informar atualizações do processo e fomentar a participação no certame', status:[true,true,false,false,false,false], obs:'Apresentados critérios técnicos previstos para a contratação. Empresa tem interesse em participar da licitação.', updates:[] },
+      { id:3, categoria:'Telemetria', fornecedor:'TOMUS', projeto:'Implantação Telemetria SANESUL', contato:'Ana Claudia Cavalcanti', fone:'(81) 3139-8100', email:'ana.claudia@tomus.com.br', proximaAcao:'Informar atualizações do processo e fomentar a participação no certame', status:[true,true,false,false,false,false], obs:'Apresentados critérios técnicos previstos para a contratação. Empresa tem interesse em participar da licitação.', updates:[] },
+      { id:4, categoria:'Telemetria', fornecedor:'EXSTO', projeto:'Implantação Telemetria SANESUL', contato:'Stanlei Borsato', fone:'(35) 9 9809-7114', email:'stanlei.borsato@exsto.com.br', proximaAcao:'Apresentar os critérios técnicos previstos na contratação', status:[true,false,false,false,false,false], obs:'Portifólio apresentados através de agenda de secretaria do governo do estado.', updates:[] },
+      { id:5, categoria:'Telemetria', fornecedor:'SMAR', projeto:'Implantação Telemetria SANESUL', contato:'Vitor Fernando Lascala\nLuiz Augusto de Carvalho', fone:'(16) 3946-3599\n(16) 99727-2286', email:'vitor.lascala@smar.com.br\nluiz.carvalho@smar.com.br', proximaAcao:'Agendar apresentação da solução', status:[false,false,false,false,false,false], obs:'Entrar em contato para fazer agenda e discutir a proposta', updates:[] },
+      { id:6, categoria:'Telemetria', fornecedor:'ABOVE NET', projeto:'Implantação Telemetria SANESUL', contato:'Marcelo Ramos', fone:'(21) 98422-9600', email:'vendas@abovenet.com.br', proximaAcao:'Agendar apresentação da solução', status:[false,false,false,false,false,false], obs:'Entrar em contato para fazer agenda e discutir a proposta', updates:[] },
+      { id:7, categoria:'Software', fornecedor:'TAKADU', projeto:'Gestão de Eventos Operacionais', contato:'Hariana Silvestre\nNayara Paques', fone:'(19) 99468-1328\n(11) 94140-2401', email:'hariana.souza@orbia.com\nnayara.paques@orbia.com', proximaAcao:'Montar pacote de licitação e buscar propostas', status:[true,true,true,true,true,false], obs:'Em fase de instrução de processo de contratação de piloto de 12 meses em Dourados. Temos duas propostas, falta a terceira para seguir e um valor de referência para cesta de preços (preferencialmente).', updates:[] },
+      { id:8, categoria:'Software', fornecedor:'OPTIMALE', projeto:'Gestão de Eventos Operacionais', contato:'Peter Cheung', fone:'(67) 98158-5802', email:'peter@optimale.com.br', proximaAcao:'Aguardar envio de proposta', status:[true,true,false,false,false,false], obs:'Apresentação da plataforma de agentes virtuais com NOC em 12/08/2026.', updates:[] },
+      { id:9, categoria:'Software', fornecedor:'VIVAVIS', projeto:'Gestão de Eventos Operacionais', contato:'Peter Cheung', fone:'(67) 98158-5802', email:'peter@optimale.com.br', proximaAcao:'Analisar proposta enviada visando a contratação.', status:[true,true,true,false,false,false], obs:'Apresentaram proposta, porém não demos retorno. Último e-mail em 28/10/2026.', updates:[] },
+      { id:10, categoria:'Software', fornecedor:'GWF', projeto:'Gestão de Eventos Operacionais', contato:'Marcos Dalecio', fone:'(11) 99869-8989', email:'marcos@testari.com.br', proximaAcao:'Retomar tratativas e enviar dados solicitados pela empresa', status:[true,true,true,false,false,false], obs:'Última conversa foi em 20/08/2026, quando a testari enviou email informando ao grupo GWF que a equipe da COTAA estava avaliando o projeto.', updates:[] },
+      { id:11, categoria:'Software', fornecedor:'WATERLOG', projeto:'Gestão de Eventos Operacionais', contato:'Fernando Pecoraro', fone:'(11) 97222-2020', email:'fpercoraro@waterlog.com.br', proximaAcao:'Enviar dados solicitados', status:[true,false,false,false,false,false], obs:'Reunião realizada junto à COTAA em 06/11/2026. Solicitadas informações de DMC em Ponta Porã para propor um piloto. COTAA está providenciando.', updates:[] },
+      { id:12, categoria:'Software', fornecedor:'BASEFORM', projeto:'Gestão de Eventos Operacionais', contato:'Eliseu Dias', fone:'(19) 99866-1445', email:'eliseu.dias@baseform.com', proximaAcao:'Pré agendado para 23/11 às 14h', status:[false,false,false,false,false,false], obs:'', updates:[] },
+      { id:13, categoria:'Software', fornecedor:'HULU', projeto:'Gestão de Eventos Operacionais', contato:'Tjitte Van der Werf', fone:'(51) 98402-6100', email:'tjitte@hulo.ai', proximaAcao:'Retomar tratativas e enviar dados solicitados pela empresa', status:[true,false,false,false,false,false], obs:'Apresentação da plataforma em 31/08/2026. Em seguida tentativa de agendar reuniões para avançar, sem sucesso. Hulo solicitou dados de um DMC para elaboração de proposta. Até o momento não demos retorno. Nos encontramos na FENASAN em reunião junto a equipe da GERPP, onde ficou definido retomar para apresentar proposta para o S.A.A. de Ponta Porã. Caso precise de subsídios a GERPP pode apoiar.', updates:[] },
+      { id:14, categoria:'Software', fornecedor:'HOW2GO', projeto:'Gestão de Eventos Operacionais', contato:'Fernanda Frochtengarten', fone:'(11) 99599-6550', email:'brasil@h2gconsulting.com', proximaAcao:'Reunião agendada para 17/11 às 10h', status:[false,false,false,false,false,false], obs:'', updates:[] },
+      { id:15, categoria:'Eficiência Bombeamento', fornecedor:'SCUBIK', projeto:'Definição de rotinas operacionais de bombeamento para aumento de eficiência', contato:'Peter Cheung', fone:'(67) 98158-5802', email:'peter@optimale.com.br', proximaAcao:'COOPE reunindo dados para fornecer o modelo solicitado', status:[true,false,false,false,false,false], obs:'Encaminhado e-mail à COTAA e COOPE em 02/06/2026, solicitando o modelo hidráulico dos sistemas a serem apresentadas propostas.', updates:[] },
+      { id:16, categoria:'Datalogger/Monitoramento', fornecedor:'GROUPLINK', projeto:'Datalogger para macro e micro com comunicação via BLE', contato:'Matheus Costa\nBárbara Lima', fone:'(11) 91851-7232\n(11) 99165-9336', email:'m.costa@grouplinkone.com\nb.lima@grouplinkone.com', proximaAcao:'Reunião agendada para 17/11 às 14h', status:[true,false,false,false,false,false], obs:'Equipamentos chegaram no final de outubro e agendada reunião em 13/08/2026 as 14h para discutir o início das atividades. Solicitado a COTAA a relação dos pontos a serem instalados os 5 sensores.', updates:[] },
+      { id:17, categoria:'Datalogger/Monitoramento', fornecedor:'GROUPLINK', projeto:"Monitoramento de mini VRP's em PNP", contato:'Matheus Costa\nBárbara Lima', fone:'(11) 91851-7232\n(11) 99165-9336', email:'m.costa@grouplinkone.com\nb.lima@grouplinkone.com', proximaAcao:'Reunião agendada para 17/11 às 14h', status:[true,true,false,false,false,false], obs:'Encaminhado e-mail à Group Link solicitando proposta comercial.', updates:[] },
+      { id:18, categoria:'Balanço Hídrico online', fornecedor:'GROUPLINK', projeto:'Software de balanço hídrico em tempo real', contato:'Matheus Costa\nBárbara Lima', fone:'(11) 91851-7232\n(11) 99165-9336', email:'m.costa@grouplinkone.com\nb.lima@grouplinkone.com', proximaAcao:'Reunião agendada para 17/11 às 14h', status:[false,false,false,false,false,false], obs:'Escolher um DMC de Nova Andradina, entrar em contato com o Matheus e passar as informações para a proposta comercial. Previsão de um piloto em valor aproximado de R$ 140.000,00.', updates:[] }
+    ];
+
+    // Local Storage Management
+    let projects = [];
+    try {
+      const saved = localStorage.getItem('sanesul_cotaa_projects');
+      if (saved) {
+        projects = JSON.parse(saved);
+        // Ensure updates array exists on older items
+        projects.forEach(p => { if (!p.updates) p.updates = []; });
+      } else {
+        projects = JSON.parse(JSON.stringify(INITIAL_PROJECTS));
+      }
+    } catch (e) {
+      projects = JSON.parse(JSON.stringify(INITIAL_PROJECTS));
+    }
+
+    let currentFiltered = [...projects];
+
+    function saveToStorage() {
+      localStorage.setItem('sanesul_cotaa_projects', JSON.stringify(projects));
+    }
+
+    function resetDefaults() {
+      if (confirm('Deseja restaurar a base de dados original da planilha?')) {
+        projects = JSON.parse(JSON.stringify(INITIAL_PROJECTS));
+        saveToStorage();
+        filterProjects(document.getElementById('searchInput').value);
+        showToast('Dados restaurados com sucesso.');
+      }
+    }
+
+    // Toast Notification
+    function showToast(msg, bg = 'var(--sn-blue-deep)') {
+      const el = document.getElementById('toast-element');
+      const text = document.getElementById('toast-text');
+      text.textContent = msg;
+      el.style.background = bg;
+      el.classList.remove('hidden');
+      setTimeout(() => el.classList.add('hidden'), 2800);
+    }
+
+    // Live Date/Time
+    function updateClock() {
+      const now = new Date();
+      const options = { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+      const el = document.getElementById('current-datetime');
+      if (el) el.textContent = now.toLocaleDateString('pt-BR', options);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Tab Switcher
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+      if (btn) btn.classList.add('active');
+    }
+
+    // Filtering
+    function filterProjects(term = '') {
+      const query = term.toLowerCase().trim();
+      const cat = document.getElementById('categoryFilter').value;
+
+      currentFiltered = projects.filter(p => {
+        const matchesCategory = (cat === 'all' || p.categoria === cat);
+        const matchesText = !query || 
+          p.fornecedor.toLowerCase().includes(query) ||
+          p.projeto.toLowerCase().includes(query) ||
+          p.contato.toLowerCase().includes(query) ||
+          p.proximaAcao.toLowerCase().includes(query) ||
+          (p.obs && p.obs.toLowerCase().includes(query));
+        return matchesCategory && matchesText;
+      });
+
+      renderTable();
+      renderKanban();
+      renderContacts();
+      renderDashboard();
+
+      const badge = document.getElementById('table-filtered-badge');
+      if (badge) badge.textContent = `${currentFiltered.length} projeto${currentFiltered.length === 1 ? '' : 's'}`;
+    }
+
+    // Category Badge Component
+    function renderCategoryBadge(cat) {
+      const style = CATEGORY_STYLES[cat] || { badgeBg: '#F1F5F9', badgeText: '#475569', border: '#CBD5E1' };
+      return `<span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-tight" style="background:${style.badgeBg}; color:${style.badgeText}; border: 1px solid ${style.border};">
+        ${cat}
+      </span>`;
+    }
+
+    // Interactive Pipeline Stepper
+    function renderPipelineDots(status, projectId, small = false) {
+      let html = '<div class="inline-flex items-center gap-0">';
+      status.forEach((isDone, idx) => {
+        if (idx > 0) {
+          const connDone = isDone && status[idx - 1];
+          html += `<span class="pipe-step-conn ${connDone ? 'done' : 'pending'}" style="width:${small?8:12}px;"></span>`;
+        }
+        html += `<span class="pipe-step-dot ${isDone ? 'done' : 'pending'}" 
+          style="width:${small?18:22}px;height:${small?18:22}px;font-size:${small?9:11}px;"
+          title="${STAGES[idx]}: ${isDone ? 'Concluído ✓' : 'Pendente'}\nClique para alternar status"
+          onclick="event.stopPropagation(); togglePipelineStage(${projectId}, ${idx})">
+          ${isDone ? '✓' : ''}
+        </span>`;
+      });
+      html += '</div>';
+      return html;
+    }
+
+    // Toggle Stage Directly
+    function togglePipelineStage(projectId, stageIndex) {
+      const proj = projects.find(p => p.id === projectId);
+      if (!proj) return;
+      proj.status[stageIndex] = !proj.status[stageIndex];
+
+      // Add auto-log in history
+      const actionName = proj.status[stageIndex] ? 'concluiu' : 'reverteu';
+      const nowStr = new Date().toLocaleString('pt-BR');
+      if (!proj.updates) proj.updates = [];
+      proj.updates.unshift({
+        date: nowStr,
+        text: `Alteração de status: ${actionName} a etapa "${STAGES[stageIndex]}".`
+      });
+
+      saveToStorage();
+      filterProjects(document.getElementById('searchInput').value);
+      showToast(`Status atualizado: ${proj.fornecedor} - ${STAGES[stageIndex]}`);
+    }
+
+    // Advance Stage (Quick button for Kanban / Details)
+    function advancePipeline(projectId) {
+      const proj = projects.find(p => p.id === projectId);
+      if (!proj) return;
+      const nextPending = proj.status.findIndex(s => !s);
+      if (nextPending !== -1) {
+        proj.status[nextPending] = true;
+        const nowStr = new Date().toLocaleString('pt-BR');
+        if (!proj.updates) proj.updates = [];
+        proj.updates.unshift({
+          date: nowStr,
+          text: `Avanço de etapa: Concluída a etapa "${STAGES[nextPending]}".`
+        });
+        saveToStorage();
+        filterProjects(document.getElementById('searchInput').value);
+        if (!document.getElementById('modal-detail').classList.contains('hidden')) {
+          openDetailModal(projectId);
+        }
+        showToast(`Avançado para: ${STAGES[nextPending]}!`, '#008744');
+      } else {
+        showToast('Todas as 6 etapas deste projeto já foram concluídas!', 'var(--sn-teal)');
+      }
+    }
+
+    // Render Table View
+    function renderTable() {
+      const tbody = document.getElementById('projects-table-body');
+      if (!currentFiltered.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-10 text-[var(--sn-text-muted)] text-sm">Nenhum projeto encontrado para o filtro aplicado.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = currentFiltered.map((p, idx) => `
+        <tr class="project-table-row ${idx % 2 === 0 ? 'bg-white' : 'bg-[#FAFBFD]'}" onclick="openDetailModal(${p.id})">
+          <td class="py-3.5 px-4 text-center font-mono text-xs font-semibold text-[var(--sn-text-muted)]">
+            ${String(p.id).padStart(2, '0')}
+          </td>
+          <td class="py-3.5 px-4">
+            ${renderCategoryBadge(p.categoria)}
+          </td>
+          <td class="py-3.5 px-4 font-bold text-sm text-[var(--sn-text-title)]">
+            ${p.fornecedor}
+          </td>
+          <td class="py-3.5 px-4 text-xs font-medium text-[var(--sn-text-body)] max-w-xs">
+            ${p.projeto}
+          </td>
+          <td class="py-3.5 px-4 text-xs text-[var(--sn-text-muted)] max-w-xs truncate" title="${p.proximaAcao}">
+            <div class="flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--sn-orange)] shrink-0"></span>
+              <span class="truncate">${p.proximaAcao || '—'}</span>
+            </div>
+          </td>
+          <td class="py-3.5 px-4 text-center">
+            ${renderPipelineDots(p.status, p.id, true)}
+          </td>
+          <td class="py-3.5 px-4 text-center">
+            <div class="flex items-center justify-center gap-1" onclick="event.stopPropagation()">
+              <button onclick="openEditModal(${p.id})" class="p-1.5 rounded text-[var(--sn-blue-deep)] hover:bg-[var(--sn-blue-deep)]/10 transition" title="Editar informações">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </button>
+              <button onclick="deleteProject(${p.id})" class="p-1.5 rounded text-red-500 hover:bg-red-50 transition" title="Excluir projeto">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Render Kanban View
+    function renderKanban() {
+      const container = document.getElementById('kanban-board-container');
+      container.innerHTML = STAGES.map((stageName, sIdx) => {
+        // Items where stage is completed or active
+        const items = currentFiltered.filter(p => {
+          const lastDone = p.status.lastIndexOf(true);
+          if (sIdx === 0) return lastDone <= 0;
+          return lastDone === sIdx;
+        });
+
+        return `
+          <div class="bg-white border border-[var(--sn-border)] rounded-xl flex flex-col shadow-sm overflow-hidden h-[620px]">
+            <div class="p-3 border-b border-[var(--sn-border-light)] bg-[#FAFBFD] flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--sn-text-muted)]">Etapa ${sIdx + 1}</span>
+                <h3 class="text-xs font-bold text-[var(--sn-teal)] leading-tight mt-0.5">${stageName}</h3>
+              </div>
+              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-[var(--sn-blue-deep)] text-white">
+                ${items.length}
+              </span>
+            </div>
+            
+            <div class="p-2 space-y-2 flex-1 overflow-y-auto">
+              ${items.length === 0 ? `
+                <div class="h-32 flex items-center justify-center text-[11px] text-[var(--sn-text-muted)] border-2 border-dashed border-[var(--sn-border-light)] rounded-lg m-1">
+                  Nenhum projeto
+                </div>
+              ` : items.map(p => {
+                const completedCount = p.status.filter(Boolean).length;
+                return `
+                  <div class="p-3 rounded-lg border border-[var(--sn-border)] bg-white hover:border-[var(--sn-blue-cyan)] hover:shadow-md transition cursor-pointer" onclick="openDetailModal(${p.id})">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-xs font-bold text-[var(--sn-text-title)]">${p.fornecedor}</span>
+                      <span class="text-[10px] font-mono text-[var(--sn-text-muted)] font-semibold">${completedCount}/6</span>
+                    </div>
+                    <p class="text-[11px] text-[var(--sn-text-body)] line-clamp-2 mb-2 leading-relaxed">${p.projeto}</p>
+                    
+                    <div class="flex items-center justify-between mt-2 pt-2 border-t border-[var(--sn-border-light)]">
+                      ${renderCategoryBadge(p.categoria)}
+                      <button onclick="event.stopPropagation(); advancePipeline(${p.id})" class="text-[10px] font-bold px-2 py-1 rounded bg-[var(--sn-green-ms)]/15 text-[var(--sn-green-dark)] hover:bg-[var(--sn-green-ms)] hover:text-white transition flex items-center gap-1" title="Avançar uma etapa">
+                        <span>Avançar</span>
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Render Contacts Directory
+    function renderContacts() {
+      const tbody = document.getElementById('contacts-table-body');
+      const supplierMap = {};
+
+      currentFiltered.forEach(p => {
+        if (!supplierMap[p.fornecedor]) {
+          supplierMap[p.fornecedor] = {
+            fornecedor: p.fornecedor,
+            contatos: p.contato,
+            fones: p.fone,
+            emails: p.email,
+            projetos: []
+          };
+        }
+        supplierMap[p.fornecedor].projetos.push(p.projeto);
+      });
+
+      tbody.innerHTML = Object.values(supplierMap).map((item, idx) => {
+        const contactLines = (item.contatos || '—').split('\n');
+        const phoneLines = (item.fones || '—').split('\n');
+        const emailLines = (item.emails || '—').split('\n');
+
+        return `
+          <tr class="${idx % 2 === 0 ? 'bg-white' : 'bg-[#FAFBFD]'}">
+            <td class="py-3.5 px-5 font-bold text-sm text-[var(--sn-blue-deep)]">
+              ${item.fornecedor}
+            </td>
+            <td class="py-3.5 px-5 text-xs text-[var(--sn-text-title)] leading-relaxed">
+              ${contactLines.map(c => `<div>${c}</div>`).join('')}
+            </td>
+            <td class="py-3.5 px-5 text-xs font-mono text-[var(--sn-teal)] leading-relaxed">
+              ${phoneLines.map(ph => `<div>${ph}</div>`).join('')}
+            </td>
+            <td class="py-3.5 px-5 text-xs leading-relaxed">
+              ${emailLines.map(em => `<a href="mailto:${em}" class="text-[var(--sn-blue-deep)] hover:underline block">${em}</a>`).join('')}
+            </td>
+            <td class="py-3.5 px-5 text-xs text-[var(--sn-text-muted)] max-w-sm">
+              <ul class="list-disc list-inside space-y-0.5">
+                ${item.projetos.map(proj => `<li class="truncate">${proj}</li>`).join('')}
+              </ul>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Render Dashboard Analytics
+    function renderDashboard() {
+      // 1. KPI Counts
+      document.getElementById('kpi-total-num').textContent = projects.length;
+      document.getElementById('kpi-fornec-num').textContent = new Set(projects.map(p => p.fornecedor)).size;
+      document.getElementById('kpi-cat-num').textContent = new Set(projects.map(p => p.categoria)).size;
+
+      // 2. Average Progress
+      const totalSteps = projects.length * 6;
+      const completedSteps = projects.reduce((acc, p) => acc + p.status.filter(Boolean).length, 0);
+      const avgPercent = totalSteps ? Math.round((completedSteps / totalSteps) * 100) : 0;
+      document.getElementById('kpi-avg-progress').textContent = avgPercent + '%';
+
+      // 3. Circular Gauge
+      const circ = 2 * Math.PI * 62; // ~389.55
+      const offset = circ - (avgPercent / 100) * circ;
+      document.getElementById('gauge-circle').style.strokeDashoffset = offset;
+      document.getElementById('gauge-percent').textContent = avgPercent + '%';
+
+      // 4. Categories Bars
+      const catCounts = {};
+      projects.forEach(p => {
+        catCounts[p.categoria] = (catCounts[p.categoria] || 0) + 1;
+      });
+
+      const maxCatCount = Math.max(...Object.values(catCounts), 1);
+      document.getElementById('category-bars-container').innerHTML = Object.entries(catCounts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([category, count]) => {
+          const style = CATEGORY_STYLES[category] || { barColor: '#0075BC' };
+          const percent = (count / maxCatCount) * 100;
+          return `
+            <div>
+              <div class="flex justify-between items-center text-xs font-semibold mb-1 text-[var(--sn-text-title)]">
+                <span>${category}</span>
+                <span class="font-mono text-[var(--sn-text-muted)]">${count} projeto${count > 1 ? 's' : ''}</span>
+              </div>
+              <div class="w-full bg-[#E2E8F0] h-3 rounded-full overflow-hidden">
+                <div class="h-full rounded-full transition-all duration-700" style="width:${percent}%; background:${style.barColor};"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      // 5. Funnel Stage Mini Cards
+      document.getElementById('funnel-stages-cards').innerHTML = STAGES.map((sName, sIdx) => {
+        const doneCount = projects.filter(p => p.status[sIdx]).length;
+        const pcent = projects.length ? Math.round((doneCount / projects.length) * 100) : 0;
+        return `
+          <div class="p-3 bg-[#FAFBFD] border border-[var(--sn-border-light)] rounded-xl text-center">
+            <span class="text-[10px] font-bold uppercase text-[var(--sn-text-muted)] tracking-wider">Etapa ${sIdx + 1}</span>
+            <div class="my-1.5 flex items-center justify-center">
+              <span class="text-xl font-extrabold text-[var(--sn-blue-deep)]">${doneCount}</span>
+              <span class="text-xs text-[var(--sn-text-muted)] font-mono ml-1">/${projects.length}</span>
+            </div>
+            <div class="text-[11px] font-semibold text-[var(--sn-text-title)] leading-tight h-8 flex items-center justify-center">
+              ${sName}
+            </div>
+            <div class="w-full bg-gray-200 h-1.5 rounded-full mt-2 overflow-hidden">
+              <div class="bg-[var(--sn-green-ms)] h-full" style="width:${pcent}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Open Detail Modal & Live Progress Timeline
+    function openDetailModal(id) {
+      const p = projects.find(item => item.id === id);
+      if (!p) return;
+
+      const completed = p.status.filter(Boolean).length;
+      const pct = Math.round((completed / 6) * 100);
+      const updates = p.updates || [];
+
+      const modalContent = document.getElementById('modal-detail-content');
+      modalContent.innerHTML = `
+        <div class="p-6 border-b border-[var(--sn-border-light)] flex items-start justify-between" style="background: linear-gradient(90deg, #F0F7FC 0%, #FFFFFF 100%);">
+          <div>
+            <div class="flex items-center gap-2 mb-1.5">
+              ${renderCategoryBadge(p.categoria)}
+              <span class="text-xs font-mono text-[var(--sn-text-muted)] font-semibold">#${String(p.id).padStart(2,'0')}</span>
+            </div>
+            <h2 class="text-xl font-bold text-[var(--sn-blue-deep)]">${p.fornecedor}</h2>
+            <p class="text-xs text-[var(--sn-text-body)] mt-0.5 font-medium">${p.projeto}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="openEditModal(${p.id})" class="btn-sanesul-blue text-xs">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              Editar Tudo
+            </button>
+            <button onclick="closeModal('modal-detail')" class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="p-6 space-y-6">
+          
+          <!-- Funnel Progress Box -->
+          <div class="bg-[#FAFBFD] border border-[var(--sn-border-light)] rounded-xl p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold uppercase text-[var(--sn-teal)]">Evolução no Funil COTAA</span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-extrabold text-[var(--sn-blue-deep)]">${completed}/6 etapas (${pct}%)</span>
+                <button onclick="advancePipeline(${p.id})" class="text-xs font-bold px-2 py-0.5 rounded bg-[var(--sn-green-ms)] text-white hover:bg-[var(--sn-green-dark)] transition">
+                  + Avançar Etapa
+                </button>
+              </div>
+            </div>
+            
+            <div class="py-3 flex justify-center">
+              ${renderPipelineDots(p.status, p.id, false)}
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-6 gap-1 text-center text-[10px] mt-1 text-[var(--sn-text-muted)]">
+              ${STAGES.map((st, i) => `
+                <div class="${p.status[i] ? 'text-green-700 font-bold' : ''}">
+                  ${st}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Próxima Ação Destaque -->
+          <div class="p-4 rounded-xl border border-amber-200" style="background: #FFFDF5;">
+            <div class="flex items-center gap-2 text-xs font-bold text-amber-800 uppercase tracking-wide mb-1">
+              <svg class="w-4 h-4 text-[var(--sn-orange)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Próxima Ação Definida
+            </div>
+            <p class="text-sm font-semibold text-gray-900">${p.proximaAcao || 'Nenhuma ação pendente cadastrada.'}</p>
+          </div>
+
+          <!-- Quick Log New Update / Note -->
+          <div class="border border-[var(--sn-border)] rounded-xl p-4 bg-white">
+            <h3 class="text-xs font-bold uppercase text-[var(--sn-teal)] mb-2 flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Anotar Nova Evolução / Ocorrência
+            </h3>
+            <div class="flex gap-2">
+              <input type="text" id="quick-note-input" placeholder="Ex: Reunião realizada com a equipe técnica; proposta atualizada..." 
+                class="app-input text-xs" onkeydown="if(event.key==='Enter')addQuickNote(${p.id})">
+              <button onclick="addQuickNote(${p.id})" class="btn-sanesul-green text-xs shrink-0">
+                Registrar
+              </button>
+            </div>
+          </div>
+
+          <!-- Evolution Timeline & Logs -->
+          <div>
+            <h3 class="text-xs font-bold uppercase text-[var(--sn-text-muted)] mb-3">Histórico de Evolução & Anotações</h3>
+            <div class="space-y-1">
+              ${updates.length === 0 ? `
+                <p class="text-xs text-[var(--sn-text-muted)] italic">Nenhuma anotação de evolução registrada ainda.</p>
+              ` : updates.map(u => `
+                <div class="log-item">
+                  <div class="log-dot"></div>
+                  <div class="text-[11px] font-mono text-[var(--sn-text-muted)]">${u.date}</div>
+                  <div class="text-xs text-[var(--sn-text-title)] font-medium mt-0.5">${u.text}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Observações Fixas da Planilha -->
+          ${p.obs ? `
+            <div class="p-4 rounded-xl bg-gray-50 border border-[var(--sn-border-light)]">
+              <span class="block text-xs font-bold uppercase text-[var(--sn-text-muted)] mb-1">Observações da Planilha Original</span>
+              <p class="text-xs text-gray-700 leading-relaxed whitespace-pre-line">${p.obs}</p>
+            </div>
+          ` : ''}
+
+          <!-- Contatos Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-[var(--sn-border-light)] text-xs">
+            <div>
+              <span class="block font-bold text-[var(--sn-text-muted)] uppercase text-[10px]">Contato</span>
+              <span class="font-medium text-gray-800 whitespace-pre-line">${p.contato || '—'}</span>
+            </div>
+            <div>
+              <span class="block font-bold text-[var(--sn-text-muted)] uppercase text-[10px]">Telefone</span>
+              <span class="font-mono font-medium text-[var(--sn-teal)] whitespace-pre-line">${p.fone || '—'}</span>
+            </div>
+            <div>
+              <span class="block font-bold text-[var(--sn-text-muted)] uppercase text-[10px]">E-mail</span>
+              <span class="font-medium text-[var(--sn-blue-deep)] whitespace-pre-line">${p.email || '—'}</span>
+            </div>
+          </div>
+
+        </div>
+      `;
+
+      document.getElementById('modal-detail').classList.remove('hidden');
+    }
+
+    // Add Note to History
+    function addQuickNote(projectId) {
+      const input = document.getElementById('quick-note-input');
+      const note = input ? input.value.trim() : '';
+      if (!note) return;
+
+      const p = projects.find(item => item.id === projectId);
+      if (!p) return;
+
+      if (!p.updates) p.updates = [];
+      const nowStr = new Date().toLocaleString('pt-BR');
+      p.updates.unshift({ date: nowStr, text: note });
+
+      saveToStorage();
+      openDetailModal(projectId);
+      showToast('Evolução registrada no histórico!');
+    }
+
+    // Open Edit Modal Form
+    function openEditModal(id) {
+      closeModal('modal-detail');
+      const p = projects.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById('modal-form-title').textContent = `Editar: ${p.fornecedor}`;
+      document.getElementById('form-project-id').value = p.id;
+      document.getElementById('form-categoria').value = p.categoria;
+      document.getElementById('form-fornecedor').value = p.fornecedor;
+      document.getElementById('form-projeto').value = p.projeto;
+      document.getElementById('form-contato').value = p.contato || '';
+      document.getElementById('form-fone').value = p.fone || '';
+      document.getElementById('form-email').value = p.email || '';
+      document.getElementById('form-proximaAcao').value = p.proximaAcao || '';
+      document.getElementById('form-obs').value = p.obs || '';
+
+      p.status.forEach((st, idx) => {
+        const chk = document.getElementById(`form-status-${idx}`);
+        if (chk) chk.checked = !!st;
+      });
+
+      document.getElementById('modal-form').classList.remove('hidden');
+    }
+
+    // Open New Project Modal Form
+    function openNewProjectModal() {
+      document.getElementById('modal-form-title').textContent = 'Cadastrar Novo Projeto COTAA';
+      document.getElementById('form-project-id').value = '';
+      document.getElementById('form-categoria').value = 'Telemetria';
+      document.getElementById('form-fornecedor').value = '';
+      document.getElementById('form-projeto').value = '';
+      document.getElementById('form-contato').value = '';
+      document.getElementById('form-fone').value = '';
+      document.getElementById('form-email').value = '';
+      document.getElementById('form-proximaAcao').value = '';
+      document.getElementById('form-obs').value = '';
+
+      for (let i = 0; i < 6; i++) {
+        const chk = document.getElementById(`form-status-${i}`);
+        if (chk) chk.checked = false;
+      }
+
+      document.getElementById('modal-form').classList.remove('hidden');
+      setTimeout(() => document.getElementById('form-fornecedor').focus(), 150);
+    }
+
+    // Handle Form Save
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const idVal = document.getElementById('form-project-id').value;
+      const isNew = !idVal;
+
+      const newStatus = [
+        document.getElementById('form-status-0').checked,
+        document.getElementById('form-status-1').checked,
+        document.getElementById('form-status-2').checked,
+        document.getElementById('form-status-3').checked,
+        document.getElementById('form-status-4').checked,
+        document.getElementById('form-status-5').checked,
+      ];
+
+      if (isNew) {
+        const nextId = projects.length ? Math.max(...projects.map(p => p.id)) + 1 : 1;
+        const newProj = {
+          id: nextId,
+          categoria: document.getElementById('form-categoria').value,
+          fornecedor: document.getElementById('form-fornecedor').value.trim(),
+          projeto: document.getElementById('form-projeto').value.trim(),
+          contato: document.getElementById('form-contato').value.trim(),
+          fone: document.getElementById('form-fone').value.trim(),
+          email: document.getElementById('form-email').value.trim(),
+          proximaAcao: document.getElementById('form-proximaAcao').value.trim(),
+          status: newStatus,
+          obs: document.getElementById('form-obs').value.trim(),
+          updates: [{ date: new Date().toLocaleString('pt-BR'), text: 'Projeto cadastrado na base de dados.' }]
+        };
+        projects.push(newProj);
+        showToast('Novo projeto cadastrado com sucesso!', 'var(--sn-green-ms)');
+      } else {
+        const proj = projects.find(p => p.id === parseInt(idVal, 10));
+        if (proj) {
+          proj.categoria = document.getElementById('form-categoria').value;
+          proj.fornecedor = document.getElementById('form-fornecedor').value.trim();
+          proj.projeto = document.getElementById('form-projeto').value.trim();
+          proj.contato = document.getElementById('form-contato').value.trim();
+          proj.fone = document.getElementById('form-fone').value.trim();
+          proj.email = document.getElementById('form-email').value.trim();
+          proj.proximaAcao = document.getElementById('form-proximaAcao').value.trim();
+          proj.obs = document.getElementById('form-obs').value.trim();
+          proj.status = newStatus;
+          if (!proj.updates) proj.updates = [];
+          proj.updates.unshift({ date: new Date().toLocaleString('pt-BR'), text: 'Informações e dados do projeto editados.' });
+          showToast('Projeto atualizado com sucesso!', 'var(--sn-blue-deep)');
+        }
+      }
+
+      saveToStorage();
+      closeModal('modal-form');
+      filterProjects(document.getElementById('searchInput').value);
+    }
+
+    // Delete Project
+    function deleteProject(id) {
+      const p = projects.find(item => item.id === id);
+      if (!p) return;
+      if (confirm(`Deseja realmente remover o projeto "${p.fornecedor} - ${p.projeto}"?`)) {
+        projects = projects.filter(item => item.id !== id);
+        saveToStorage();
+        filterProjects(document.getElementById('searchInput').value);
+        showToast('Projeto removido.', '#DC2626');
+      }
+    }
+
+    // Close Modal helper
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+    }
+
+    // Keyboard ESC to close modal
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal('modal-detail');
+        closeModal('modal-form');
+      }
+    });
+
+    // Export to CSV Function
+    function exportToCSV() {
+      const headers = ['#', 'CATEGORIA', 'FORNECEDOR', 'PROJETO', 'CONTATO', 'FONE', 'E-MAIL', 'PROXIMAS ACOES', 'APRESENTACAO', 'ENVIO_DADOS', 'PROP_COMERCIAL', 'ANALISE_PROP', 'AJUSTE_PROP', 'ELAB_PROCESSO', 'OBSERVACOES'];
+      
+      const rows = projects.map(p => [
+        p.id,
+        `"${p.categoria.replace(/"/g, '""')}"`,
+        `"${p.fornecedor.replace(/"/g, '""')}"`,
+        `"${p.projeto.replace(/"/g, '""')}"`,
+        `"${(p.contato||'').replace(/"/g, '""')}"`,
+        `"${(p.fone||'').replace(/"/g, '""')}"`,
+        `"${(p.email||'').replace(/"/g, '""')}"`,
+        `"${(p.proximaAcao||'').replace(/"/g, '""')}"`,
+        p.status[0] ? 'Sim' : 'Nao',
+        p.status[1] ? 'Sim' : 'Nao',
+        p.status[2] ? 'Sim' : 'Nao',
+        p.status[3] ? 'Sim' : 'Nao',
+        p.status[4] ? 'Sim' : 'Nao',
+        p.status[5] ? 'Sim' : 'Nao',
+        `"${(p.obs||'').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = '\uFEFF' + [headers.join(';'), ...rows.map(r => r.join(';'))].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `COTAA_Projetos_SANESUL_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Planilha CSV gerada e baixada com sucesso!', 'var(--sn-green-ms)');
+    }
+
+    // Initialize App
+    filterProjects('');
+  </script>
+</body>
+</html>
